@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#fff7e8" />
+    <title>甜度补给站</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%23e8f6ff'/><circle cx='32' cy='37' r='13' fill='%23609ac8'/><circle cx='18' cy='21' r='7' fill='%23609ac8'/><circle cx='32' cy='17' r='7' fill='%23609ac8'/><circle cx='46' cy='21' r='7' fill='%23609ac8'/></svg>" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main id="app">
+      <section id="homeScreen" class="screen home-screen splash-screen active" aria-labelledby="gameTitle">
+        <div class="splash-frame">
+          <div class="splash-scene" aria-hidden="true">
+            <div class="scene-sun-glow"></div>
+            <div class="scene-cloud scene-cloud-left"></div>
+            <div class="scene-cloud scene-cloud-right"></div>
+            <div class="scene-distant-town"><i></i><i></i><i></i><i></i></div>
+            <div class="scene-shop">
+              <span class="shop-cup">🧋</span><span class="shop-paw">●</span>
+              <i class="shop-awning"></i><i class="shop-door"></i><i class="shop-window"></i>
+            </div>
+            <div class="scene-signpost"><i>●</i><b>🧋</b></div>
+            <div class="scene-path"></div>
+            <div class="scene-foliage foliage-left"></div>
+            <div class="scene-foliage foliage-right"></div>
+            <div class="scene-flowers flowers-left">✿　✿　✿</div>
+            <div class="scene-flowers flowers-right">✿　✿</div>
+            <div class="scene-bubble bubble-one"></div>
+            <div class="scene-bubble bubble-two"></div>
+            <div class="scene-bubble bubble-three"></div>
+          </div>
+
+          <button class="splash-sound-toggle" data-audio-toggle aria-label="关闭声音">
+            <span class="music-icon">♪</span><span class="music-text">音乐开关</span>
+          </button>
+
+          <header class="splash-title-area">
+            <p class="splash-eyebrow">•　SWEET SUPPLY STATION　•</p>
+            <h1 id="gameTitle" class="splash-logo"><span class="logo-blue">甜度</span><span class="logo-brown">补给站</span></h1>
+            <div id="gameSubtitle" class="splash-ribbon">🐾　一款轻量横版跳跃闯关 Demo　🐾</div>
+          </header>
+
+          <div class="splash-cat-mascot" aria-label="甜度补给猫拿着奶茶向玩家挥手">
+            <div class="mascot-cat" aria-hidden="true">
+              <span class="cat-tail"></span><span class="cat-body"></span>
+              <span class="cat-head">
+                <i class="cat-ear ear-left"></i><i class="cat-ear ear-right"></i>
+                <i class="cat-blue-patch"></i><i class="cat-face">• ᴗ •</i><i class="cat-earmuff"></i>
+              </span>
+              <span class="cat-scarf"></span>
+              <span class="cat-milk-tea">
+                <i class="cat-cup-lid"></i><i class="cat-cup-straw"></i><i class="cat-cup-face">•ᴗ•</i>
+              </span>
+              <span class="cat-paw paw-left"></span><span class="cat-paw paw-right"></span>
+              <span class="cat-bag"></span>
+            </div>
+          </div>
+
+          <button id="startButton" class="splash-start-btn"><span class="paw-icon">🐾</span><span>开始挑战</span></button>
+
+          <div class="splash-rule-card">
+            <p>收集奶茶，避开陷阱，抵达终点。</p>
+            <p>完成三关后，将解锁最终奖励。</p>
+          </div>
+
+          <div class="splash-bottom-actions">
+            <button class="splash-circle-btn" data-dialog="controls">
+              <span class="circle-icon">🐱</span><span class="circle-label">操作说明</span>
+            </button>
+            <button class="splash-circle-btn" data-dialog="rewards">
+              <span class="circle-icon">🎁</span><span class="circle-label">奖励预览</span>
+            </button>
+            <button class="splash-circle-btn splash-bottom-music" data-audio-toggle aria-label="关闭声音">
+              <span class="circle-icon">♪</span><span class="circle-label">音乐开关</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="levelSelectScreen" class="screen level-select-screen" aria-labelledby="mapTitle">
+        <div class="route-map-scene">
+          <header class="map-header">
+            <button id="mapHomeButton" class="map-back-button" aria-label="返回首页">←</button>
+            <div>
+              <p class="eyebrow">SWEET ROUTE MAP</p>
+              <h2 id="mapTitle">选择关卡</h2>
+              <p>沿着甜度路线，一关一关解锁奖励。</p>
+            </div>
+          </header>
+          <div class="resource-bar" aria-label="挑战进度">
+            <span>🧋 <strong id="mapTeaTotal">0 / 21</strong></span>
+            <span>🎟 <strong id="mapRewardTotal">0 / 3</strong></span>
+            <span>♥ <strong id="mapStatus">可挑战</strong></span>
+          </div>
+          <button class="audio-toggle map-audio-toggle" data-audio-toggle aria-label="关闭声音">♪</button>
+          <div class="map-cloud map-cloud-a"></div>
+          <div class="map-cloud map-cloud-b"></div>
+          <div class="blue-route route-one"></div><div class="blue-route route-two"></div><div class="blue-route route-three"></div>
+          <div class="route-dots dots-a">•　•　•　•</div><div class="route-dots dots-b">•　•　•</div>
+          <div class="map-decoration dessert-stall" aria-hidden="true"></div>
+          <div class="map-decoration tea-shop" aria-hidden="true"></div>
+          <div class="map-decoration straw-marker">╱╲</div>
+          <div class="map-lamp lamp-a"></div><div class="map-lamp lamp-b"></div>
+          <div class="boba-stones stones-a">●　●　●</div>
+          <div class="boba-stones stones-b">●　●</div>
+          <div class="map-cat-guide" aria-hidden="true"><span class="guide-scarf"></span><span class="guide-tail"></span></div>
+
+          <article id="levelNode0" class="level-node node-one" data-level="0">
+            <button class="node-button" data-level-node="0" aria-label="进入第 1 关">
+              <span class="node-number">1</span><span class="node-check">✓</span>
+            </button>
+            <div class="node-card">
+              <p>第 1 关</p><h3>冰淇淋小路</h3>
+              <span id="levelTea0">🧋 0 / 5</span>
+              <small id="levelBest0">尚未通关</small>
+            </div>
+          </article>
+
+          <article id="levelNode1" class="level-node node-two locked" data-level="1">
+            <button class="node-button" data-level-node="1" aria-label="进入第 2 关">
+              <span class="node-number">2</span><span class="node-lock">锁</span><span class="node-check">✓</span>
+            </button>
+            <div class="node-card">
+              <p>第 2 关</p><h3>糖霜高地</h3>
+              <span id="levelTea1">🧋 0 / 7</span>
+              <small id="levelBest1">完成上一关后解锁</small>
+            </div>
+          </article>
+          <article id="levelNode2" class="level-node node-three locked" data-level="2">
+            <button class="node-button" data-level-node="2" aria-label="进入第 3 关">
+              <span class="node-number">3</span><span class="node-lock">锁</span><span class="node-check">✓</span>
+            </button>
+            <div class="node-card">
+              <p>第 3 关</p><h3>奶茶补给站</h3>
+              <span id="levelTea2">🧋 0 / 9</span>
+              <small id="levelBest2">完成上一关后解锁</small>
+            </div>
+          </article>
+          <button id="resetProgressButton" class="map-reset-button">重置进度</button>
+        </div>
+        <div id="mapToast" class="map-toast" role="status"></div>
+      </section>
+
+      <section id="gameScreen" class="screen game-screen" aria-label="游戏画面">
+        <header class="game-hud">
+          <div class="hud-main">
+            <p id="levelEyebrow">第 1 关</p>
+            <h2 id="levelName">冰淇淋小路</h2>
+          </div>
+          <div class="hud-chip tea-chip"><span id="teaValue">🧋 0 / 5</span><small>奶茶收集</small></div>
+          <div id="keyChip" class="hud-chip key-chip hidden"><span id="keyValue">未获得</span><small>吸管钥匙</small></div>
+          <div class="hud-chip health-chip"><span id="healthValue">♥ ♥ ♥</span><small>生命值</small></div>
+          <button class="audio-toggle game-audio-toggle" data-audio-toggle aria-label="关闭声音">♪</button>
+          <button id="pauseButton" class="icon-button" aria-label="暂停游戏">Ⅱ</button>
+        </header>
+
+        <div class="canvas-shell">
+          <canvas id="gameCanvas" width="1280" height="720" aria-label="横版平台跳跃游戏"></canvas>
+          <div id="toast" class="toast" role="status"></div>
+          <div id="portraitHint" class="portrait-hint">把手机横过来，体验会更好一点 ↻</div>
+          <div id="tutorialHint" class="tutorial-hint">A D / ← → 移动　W / 空格 二段跳</div>
+        </div>
+
+        <div id="mobileControls" class="mobile-controls" aria-label="触屏操作">
+          <div class="move-controls">
+            <button class="control-button" data-control="left" aria-label="向左移动">←</button>
+            <button class="control-button" data-control="right" aria-label="向右移动">→</button>
+          </div>
+          <button class="control-button jump-button" data-control="jump" aria-label="跳跃">↑<small>跳跃</small></button>
+        </div>
+      </section>
+
+      <section id="levelCompleteScreen" class="screen result-screen" aria-live="polite">
+        <div class="result-card">
+          <div id="resultIcon" class="reward-icon">🍦</div>
+          <p class="eyebrow">LEVEL CLEAR</p>
+          <h2 id="resultTitle">冰淇淋小路通过！</h2>
+          <div class="result-stats">
+            <div><strong id="resultTea">5</strong><span>收集奶茶</span></div>
+            <div><strong id="resultTime">01:30</strong><span>本关用时</span></div>
+          </div>
+          <p>获得奖励</p>
+          <div id="resultReward" class="reward-ticket">冰淇淋奖励券 × 1</div>
+          <p id="resultNote" class="result-note">这个奖励不急着兑换，<br />但它已经被认真记录下来了。</p>
+          <button id="nextLevelButton" class="primary-button">下一关 <span>→</span></button>
+          <button id="resultMapButton" class="outline-button">返回地图</button>
+        </div>
+      </section>
+
+      <section id="finalScreen" class="screen final-screen">
+        <div class="sparkle sparkle-a">✦</div><div class="sparkle sparkle-b">✧</div>
+        <div class="result-card final-card">
+          <div class="reward-pair" aria-hidden="true"><span>🍦</span><span>🍰</span><span>🧋</span></div>
+          <p class="eyebrow">SWEETNESS COMPLETE</p>
+          <h2>今日甜度挑战完成</h2>
+          <p class="final-copy">恭喜通关。</p>
+          <p>本次 Demo 的三份奖励已经解锁：</p>
+          <div class="final-rewards"><strong>冰淇淋奖励券 × 1</strong><i></i><strong>小蛋糕奖励券 × 1</strong><i></i><strong>奶茶奖励券 × 1</strong></div>
+          <p id="finalRewardText" class="final-message">奖励已经存档。至于怎么兑换，可以等一个合适的时机再决定。</p>
+          <p class="final-note">这不是隐藏任务，<br />只是一个刚好有点认真准备的小 Demo。</p>
+          <button id="saveRewardButton" class="primary-button">保存我的奖励</button>
+          <p id="saveMessage" class="save-message" role="status"></p>
+          <div class="final-actions">
+            <button id="finalMapButton" class="outline-button">返回地图</button>
+            <button id="replayButton" class="text-button">再玩一次</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="dialogBackdrop" class="dialog-backdrop" aria-hidden="true">
+      <div class="dialog" role="dialog" aria-modal="true">
+        <button id="dialogClose" class="dialog-close" aria-label="关闭">×</button>
+        <div id="dialogContent"></div>
+      </div>
+    </div>
+
+    <div id="pauseOverlay" class="dialog-backdrop" aria-hidden="true">
+      <div class="dialog pause-dialog" role="dialog" aria-modal="true">
+        <p class="eyebrow">TAKE A SIP</p>
+        <h2>先暂停一下</h2>
+        <p>小角色会在这里等你。</p>
+        <button class="audio-toggle pause-audio-toggle" data-audio-toggle aria-label="关闭声音">♪ 声音</button>
+        <button id="resumeButton" class="primary-button">继续游戏</button>
+        <button id="restartButton" class="outline-button">重新开始当前关卡</button>
+        <button id="quitButton" class="text-button">返回地图</button>
+      </div>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>
