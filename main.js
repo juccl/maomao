@@ -1044,7 +1044,7 @@ function updateParticles(dt) {
    ========================================================= */
 function resizeCanvas() {
   const rect = canvas.getBoundingClientRect();
-  const ratio = clamp(rect.width / Math.max(rect.height, 1), .72, 2.1);
+  const ratio = clamp(rect.width / Math.max(rect.height, 1), .72, 4);
   canvas.height = 720;
   canvas.width = Math.round(720 * ratio);
 }
@@ -1058,6 +1058,8 @@ function updateMobileOrientationLayout() {
 
 function scheduleViewportRefresh() {
   clearTimeout(viewportRefreshTimer);
+  const viewportHeight = window.visualViewport?.height || window.innerHeight;
+  document.documentElement.style.setProperty("--app-height", `${Math.round(viewportHeight)}px`);
   updateMobileOrientationLayout();
   resizeCanvas();
   viewportRefreshTimer = window.setTimeout(resizeCanvas, 180);
