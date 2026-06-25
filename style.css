@@ -410,6 +410,11 @@ h2 { margin-bottom: 12px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.0
   transition: opacity .5s;
 }
 .portrait-hint { display: none; top: 84px; bottom: auto; background: rgba(244, 165, 137, .94); }
+.portrait-hint {
+  border: 1px solid rgba(255,255,255,.72);
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(74,54,48,.2);
+}
 
 .mobile-controls { display: none; }
 .dialog-backdrop {
@@ -505,6 +510,45 @@ h2 { margin-bottom: 12px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.0
   .string-lights { left: 20%; right: 12%; }
   .map-footer { grid-template-columns: 1fr; padding-bottom: 10px; }
   .map-reset-button { padding: 8px; }
+}
+
+@media (orientation: portrait) and (max-width: 700px) {
+  body.force-landscape-fallback #gameScreen.active {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: 100dvh;
+    height: 100vw;
+    transform: translate(-50%, -50%) rotate(90deg);
+    transform-origin: center;
+  }
+  body.force-landscape-fallback .portrait-hint { display: none !important; }
+  body.force-landscape-fallback .game-hud {
+    left: max(8px, env(safe-area-inset-top));
+    right: max(8px, env(safe-area-inset-bottom));
+  }
+  body.force-landscape-fallback .mobile-controls {
+    left: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (orientation: landscape) and (hover: none), (orientation: landscape) and (pointer: coarse) {
+  html, body, #app, .screen { height: 100dvh; min-height: 100dvh; }
+  .game-screen { width: 100vw; height: 100dvh; }
+  .game-hud { top: max(6px, env(safe-area-inset-top)); left: max(8px, env(safe-area-inset-left)); right: max(8px, env(safe-area-inset-right)); }
+  .hud-main { min-width: 155px; padding: 6px 10px; }
+  .hud-main h2 { font-size: 14px; }
+  .hud-chip { min-width: 68px; padding: 5px 9px; }
+  .hud-chip span { font-size: 12px; }
+  .mobile-controls {
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  .control-button { width: 58px; height: 58px; border-radius: 18px; }
+  .jump-button { width: 66px; height: 66px; }
+  .portrait-hint { display: none !important; }
 }
 
 @media (max-height: 690px) {

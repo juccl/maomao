@@ -482,7 +482,7 @@ function cloneLevel(source) {
     enemies: source.enemies.map((e) => ({ ...e, alive: true, dir: Math.random() > .5 ? 1 : -1 })),
     traps: source.traps.map((t) => ({ ...t })),
     checkpoints: source.checkpoints.map((c, index) => ({
-      ...c, active: false, activationGlow: 0, phase: index * 1.7,
+      ...c, active: false, triggered: false, activationGlow: 0, phase: index * 1.7,
     })),
     decorations: source.decorations.map((d) => ({ ...d })),
     key: source.key ? { ...source.key, collected: false } : null,
@@ -504,6 +504,7 @@ function createPlayer(start) {
 
 function showScreen(screen) {
   screens.forEach((item) => item.classList.toggle("active", item === screen));
+  window.setTimeout(scheduleViewportRefresh, 0);
 }
 
 function createDefaultProgress() {
@@ -561,6 +562,7 @@ function selectLevel(index, notifyLocked = true) {
   }
   selectedLevelIndex = index;
   playButtonSfx();
+  requestLandscapeMode();
   startLevel(index);
   return true;
 }
@@ -622,6 +624,11 @@ function startLevel(index) {
   currentLevelIndex = index;
   level = cloneLevel(LEVELS[index]);
   player = createPlayer(level.start);
+  const startingCheckpoint = level.checkpoints[0];
+  if (startingCheckpoint && player.x >= startingCheckpoint.x) {
+    startingCheckpoint.active = true;
+    startingCheckpoint.triggered = true;
+  }
   cameraX = 0;
   particles = [];
   floatTexts = [];
@@ -632,6 +639,7 @@ function startLevel(index) {
   showScreen(ui.game);
   // 游戏页此前处于 display:none，必须在显示后重新读取实际尺寸。
   resizeCanvas();
+  scheduleViewportRefresh();
   ui.levelEyebrow.textContent = level.chapter;
   ui.levelName.textContent = level.name;
   ui.keyChip.classList.toggle("hidden", !level.requiredKey);
@@ -935,17 +943,23 @@ function updateItems() {
 }
 
 function updateCheckpoints(dt) {
-  for (const checkpoint of level.checkpoints) {
+  level.checkpoints.forEach((checkpoint) => {
     checkpoint.activationGlow = Math.max(0, checkpoint.activationGlow - dt);
-    if (checkpoint.active || player.x < checkpoint.x) continue;
-    level.checkpoints.forEach((c) => { c.active = false; });
-    checkpoint.active = true;
-    checkpoint.activationGlow = .85;
-    player.checkpoint = { x: checkpoint.x + 20, y: checkpoint.y - 20 };
-    burst(checkpoint.x + 17, checkpoint.y - 5, PLAYER_SKIN.blue, 10, 105);
-    playOscillator(640, .09, "sine", .08);
-    playOscillator(820, .12, "triangle", .06, .06);
-  }
+  });
+
+  const reachedCheckpoint = [...level.checkpoints]
+    .reverse()
+    .find((checkpoint) => !checkpoint.triggered && player.x + player.w >= checkpoint.x);
+  if (!reachedCheckpoint) return;
+
+  level.checkpoints.forEach((checkpoint) => { checkpoint.active = false; });
+  reachedCheckpoint.active = true;
+  reachedCheckpoint.triggered = true;
+  reachedCheckpoint.activationGlow = .85;
+  player.checkpoint = { x: reachedCheckpoint.x + 20, y: reachedCheckpoint.y - 20 };
+  burst(reachedCheckpoint.x + 17, reachedCheckpoint.y - 5, PLAYER_SKIN.blue, 8, 90);
+  playOscillator(720, .12, "sine", .065);
+  showToast("复活点已记录。", 1200);
 }
 
 function tryGoal() {
@@ -1034,7 +1048,46 @@ function resizeCanvas() {
   canvas.height = 720;
   canvas.width = Math.round(720 * ratio);
 }
-window.addEventListener("resize", resizeCanvas);
+
+let viewportRefreshTimer = 0;
+function updateMobileOrientationLayout() {
+  const shouldForceLandscape = isTouchPhone() &&
+    window.innerHeight > window.innerWidth &&
+    ui.game.classList.contains("active");
+  document.body.classList.toggle("force-landscape-fallback", shouldForceLandscape);
+}
+
+function scheduleViewportRefresh() {
+  clearTimeout(viewportRefreshTimer);
+  updateMobileOrientationLayout();
+  resizeCanvas();
+  viewportRefreshTimer = window.setTimeout(resizeCanvas, 180);
+  window.setTimeout(resizeCanvas, 480);
+}
+
+function isTouchPhone() {
+  return window.matchMedia("(hover: none), (pointer: coarse)").matches &&
+    Math.min(window.screen.width, window.screen.height) < 900;
+}
+
+async function requestLandscapeMode() {
+  if (!isTouchPhone()) return;
+  document.body.classList.add("mobile-game-mode");
+  try {
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen({ navigationUI: "hide" });
+    }
+    if (screen.orientation?.lock) await screen.orientation.lock("landscape");
+  } catch (_) {
+    // iOS Safari 等浏览器不开放方向锁定；保留旋转提示并在实际旋转后重排画面。
+  } finally {
+    scheduleViewportRefresh();
+  }
+}
+
+window.addEventListener("resize", scheduleViewportRefresh);
+window.addEventListener("orientationchange", scheduleViewportRefresh);
+window.visualViewport?.addEventListener("resize", scheduleViewportRefresh);
 resizeCanvas();
 
 function draw(time) {
@@ -1859,6 +1912,7 @@ document.querySelectorAll("[data-level-node]").forEach((button) => {
 });
 document.querySelector("#resetProgressButton").addEventListener("click", resetProgress);
 document.querySelector("#pauseButton").addEventListener("click", openPause);
+document.querySelector("#portraitHint").addEventListener("click", requestLandscapeMode);
 document.querySelector("#resumeButton").addEventListener("click", closePause);
 document.querySelector("#restartButton").addEventListener("click", restartLevel);
 document.querySelector("#quitButton").addEventListener("click", showLevelSelect);

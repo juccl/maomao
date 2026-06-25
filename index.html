@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <meta name="theme-color" content="#fff7e8" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>甜度补给站</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%23e8f6ff'/><circle cx='32' cy='37' r='13' fill='%23609ac8'/><circle cx='18' cy='21' r='7' fill='%23609ac8'/><circle cx='32' cy='17' r='7' fill='%23609ac8'/><circle cx='46' cy='21' r='7' fill='%23609ac8'/></svg>" />
     <link rel="stylesheet" href="./style.css" />
@@ -159,7 +162,7 @@
         <div class="canvas-shell">
           <canvas id="gameCanvas" width="1280" height="720" aria-label="横版平台跳跃游戏"></canvas>
           <div id="toast" class="toast" role="status"></div>
-          <div id="portraitHint" class="portrait-hint">把手机横过来，体验会更好一点 ↻</div>
+          <button id="portraitHint" class="portrait-hint" type="button">点击切换横屏游玩 ↻</button>
           <div id="tutorialHint" class="tutorial-hint">A D / ← → 移动　W / 空格 二段跳</div>
         </div>
 
