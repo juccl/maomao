@@ -135,11 +135,12 @@ const LEVELS = [
       { x: 5920, y: 574, w: 50, h: 46, minX: 5700, maxX: 6030, speed: 72, kind: "pearl" },
     ],
     traps: [
-      { x: 940, y: 600, w: 40, h: 20, kind: "barrier" },
-      { x: 2790, y: 596, w: 85, h: 24, kind: "spikes" },
-      { x: 3790, y: 594, w: 55, h: 26, kind: "barrier" },
-      { x: 4815, y: 596, w: 65, h: 24, kind: "spikes" },
-      { x: 6000, y: 596, w: 55, h: 24, kind: "spikes" },
+      { x: 890, y: 598, w: 32, h: 22, kind: "spikes" },
+      { x: 1760, y: 598, w: 32, h: 22, kind: "spikes" },
+      { x: 2800, y: 598, w: 38, h: 22, kind: "spikes" },
+      { x: 3765, y: 598, w: 32, h: 22, kind: "spikes" },
+      { x: 4795, y: 598, w: 36, h: 22, kind: "spikes" },
+      { x: 5980, y: 598, w: 34, h: 22, kind: "spikes" },
     ],
     checkpoints: [
       { x: 60, y: 550 }, { x: 4130, y: 550 },
@@ -201,14 +202,14 @@ const LEVELS = [
       { x: 6870, y: 574, w: 50, h: 46, minX: 6590, maxX: 7040, speed: 82, kind: "cream" },
     ],
     traps: [
-      { x: 770, y: 596, w: 38, h: 24, kind: "spikes" },
-      { x: 1580, y: 596, w: 55, h: 24, kind: "spikes" },
-      { x: 2460, y: 596, w: 55, h: 24, kind: "spikes" },
-      { x: 3370, y: 596, w: 68, h: 24, kind: "spikes" },
-      { x: 4250, y: 594, w: 65, h: 26, kind: "barrier" },
-      { x: 5200, y: 596, w: 65, h: 24, kind: "spikes" },
-      { x: 6090, y: 596, w: 80, h: 24, kind: "spikes" },
-      { x: 6970, y: 594, w: 70, h: 26, kind: "barrier" },
+      { x: 745, y: 598, w: 32, h: 22, kind: "spikes" },
+      { x: 1570, y: 598, w: 34, h: 22, kind: "spikes" },
+      { x: 2450, y: 598, w: 34, h: 22, kind: "spikes" },
+      { x: 3375, y: 598, w: 36, h: 22, kind: "spikes" },
+      { x: 4240, y: 598, w: 34, h: 22, kind: "spikes" },
+      { x: 5190, y: 598, w: 36, h: 22, kind: "spikes" },
+      { x: 6100, y: 598, w: 36, h: 22, kind: "spikes" },
+      { x: 6980, y: 598, w: 34, h: 22, kind: "spikes" },
     ],
     checkpoints: [
       { x: 60, y: 550 }, { x: 3710, y: 550 },
@@ -282,15 +283,15 @@ const LEVELS = [
       { x: 8420, y: 574, w: 52, h: 46, minX: 8090, maxX: 8600, speed: 105, kind: "cloud" },
     ],
     traps: [
-      { x: 760, y: 596, w: 45, h: 24, kind: "spikes" },
-      { x: 1570, y: 594, w: 65, h: 26, kind: "barrier" },
-      { x: 2510, y: 596, w: 70, h: 24, kind: "spikes" },
-      { x: 3470, y: 596, w: 75, h: 24, kind: "spikes" },
-      { x: 4510, y: 594, w: 80, h: 26, kind: "barrier" },
-      { x: 5450, y: 596, w: 70, h: 24, kind: "spikes" },
-      { x: 6425, y: 596, w: 70, h: 24, kind: "spikes" },
-      { x: 7425, y: 594, w: 70, h: 26, kind: "barrier" },
-      { x: 8600, y: 596, w: 70, h: 24, kind: "spikes" },
+      { x: 745, y: 598, w: 34, h: 22, kind: "spikes" },
+      { x: 1580, y: 598, w: 36, h: 22, kind: "spikes" },
+      { x: 2510, y: 598, w: 36, h: 22, kind: "spikes" },
+      { x: 3470, y: 598, w: 38, h: 22, kind: "spikes" },
+      { x: 4535, y: 598, w: 36, h: 22, kind: "spikes" },
+      { x: 5460, y: 598, w: 36, h: 22, kind: "spikes" },
+      { x: 6430, y: 598, w: 38, h: 22, kind: "spikes" },
+      { x: 7440, y: 598, w: 36, h: 22, kind: "spikes" },
+      { x: 8610, y: 598, w: 38, h: 22, kind: "spikes" },
     ],
     checkpoints: [
       { x: 60, y: 550 }, { x: 3880, y: 550 }, { x: 7870, y: 550 },
@@ -762,6 +763,7 @@ function updatePlayer(dt) {
   const stats = GAME_CONFIG.player;
   const wasGrounded = player.grounded;
   const oldFacing = player.facing;
+  const supportPlatform = player.standingPlatform;
   player.animTime += dt;
   player.doubleJumpTimer = Math.max(0, player.doubleJumpTimer - dt);
   player.landingTimer = Math.max(0, player.landingTimer - dt);
@@ -779,9 +781,20 @@ function updatePlayer(dt) {
     player.vx = approach(player.vx, 0, stats.friction * dt);
   }
 
+  // 先继承脚下平台本帧的位移，再处理起跳。
+  // 否则起跳帧会少走一帧平台位移，横向移动的平台会让角色看起来突然回退。
+  if (supportPlatform) {
+    player.x += supportPlatform.dx;
+    player.y += supportPlatform.dy;
+  }
+
   if (pressed.jump && player.jumps < 2) {
     const isDoubleJump = player.jumps === 1;
     player.vy = -(player.jumps === 0 ? stats.jumpForce : stats.secondJumpForce);
+    if (!isDoubleJump && supportPlatform?.type === "moving" && dt > 0) {
+      const platformVelocityX = supportPlatform.dx / dt;
+      player.vx += clamp(platformVelocityX * 0.3, -45, 45);
+    }
     player.jumps += 1;
     player.doubleJumpTriggered = isDoubleJump;
     player.doubleJumpTimer = isDoubleJump ? .42 : 0;
@@ -799,18 +812,15 @@ function updatePlayer(dt) {
   if (!keys.jump && player.vy < -260) player.vy += stats.gravity * 1.45 * dt;
   player.vy = Math.min(player.vy + stats.gravity * dt, stats.maxFallSpeed);
 
-  if (player.standingPlatform) {
-    player.x += player.standingPlatform.dx;
-    player.y += player.standingPlatform.dy;
-  }
-
+  const previousX = player.x;
   player.x += player.vx * dt;
-  resolveHorizontal();
+  resolveHorizontal(previousX);
+  const previousY = player.y;
   player.y += player.vy * dt;
   const impactVelocity = player.vy;
   player.grounded = false;
   player.standingPlatform = null;
-  resolveVertical();
+  resolveVertical(previousY);
   if (!wasGrounded && player.grounded && impactVelocity > 260) {
     player.landingTimer = .18;
     burst(player.x + player.w / 2, player.y + player.h - 2, "rgba(205,229,242,.9)", 5, 75);
@@ -818,31 +828,51 @@ function updatePlayer(dt) {
   player.x = clamp(player.x, 0, level.width - player.w);
 }
 
-function resolveHorizontal() {
+function resolveHorizontal(previousX) {
   for (const platform of level.platforms) {
+    // 跳台是单向落脚面，不应该在侧面把角色顶停或推回。
+    if (platform.h <= 30) continue;
     if (!intersects(player, platform)) continue;
-    if (player.vx > 0) player.x = platform.x - player.w;
-    else if (player.vx < 0) player.x = platform.x + platform.w;
+    const previousRight = previousX + player.w;
+    const previousLeft = previousX;
+    if (player.vx > 0 && previousRight <= platform.x + 4) {
+      player.x = platform.x - player.w;
+    } else if (player.vx < 0 && previousLeft >= platform.x + platform.w - 4) {
+      player.x = platform.x + platform.w;
+    } else {
+      continue;
+    }
     player.vx = 0;
   }
 }
 
-function resolveVertical() {
+function resolveVertical(previousY) {
+  let landingPlatform = null;
+  const previousBottom = previousY + player.h;
+  const currentBottom = player.y + player.h;
+
   for (const platform of level.platforms) {
-    if (!intersects(player, platform)) continue;
-    const previousBottom = player.y + player.h - player.vy / 60;
-    if (player.vy >= 0 && previousBottom <= platform.y + 18) {
-      player.y = platform.y - player.h;
-      player.vy = 0;
-      player.grounded = true;
-      player.jumps = 0;
-      player.standingPlatform = platform;
-      if (platform.type === "shaky") platform.shakeTime += 0.03;
-    } else if (player.vy < 0) {
+    const overlapsX = player.x + player.w > platform.x + 2
+      && player.x < platform.x + platform.w - 2;
+    const landingTolerance = 12 + Math.abs(platform.dy || 0);
+    const crossesTop = previousBottom <= platform.y + landingTolerance
+      && currentBottom >= platform.y;
+
+    if (player.vy >= 0 && overlapsX && crossesTop) {
+      if (!landingPlatform || platform.y < landingPlatform.y) landingPlatform = platform;
+    } else if (player.vy < 0 && platform.h > 30 && intersects(player, platform)) {
       player.y = platform.y + platform.h;
       player.vy = 0;
     }
   }
+
+  if (!landingPlatform) return;
+  player.y = landingPlatform.y - player.h;
+  player.vy = 0;
+  player.grounded = true;
+  player.jumps = 0;
+  player.standingPlatform = landingPlatform;
+  if (landingPlatform.type === "shaky") landingPlatform.shakeTime += 0.03;
 }
 
 function updatePlatforms(dt) {
