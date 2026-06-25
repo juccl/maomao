@@ -409,12 +409,7 @@ h2 { margin-bottom: 12px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.0
   pointer-events: none;
   transition: opacity .5s;
 }
-.portrait-hint { display: none; top: 84px; bottom: auto; background: rgba(244, 165, 137, .94); }
-.portrait-hint {
-  border: 1px solid rgba(255,255,255,.72);
-  cursor: pointer;
-  box-shadow: 0 8px 22px rgba(74,54,48,.2);
-}
+.portrait-hint { display: none; }
 
 .mobile-controls { display: none; }
 .dialog-backdrop {
@@ -487,7 +482,6 @@ h2 { margin-bottom: 12px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.0
 }
 
 @media (orientation: portrait) and (max-width: 700px) {
-  .portrait-hint { display: block; }
   .game-hud { left: 8px; right: 8px; top: 8px; gap: 5px; align-items: flex-start; }
   .hud-main { min-width: 0; padding: 7px 10px; }
   .hud-main h2 { font-size: 13px; }
@@ -512,27 +506,6 @@ h2 { margin-bottom: 12px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.0
   .map-reset-button { padding: 8px; }
 }
 
-@media (orientation: portrait) and (max-width: 700px) {
-  body.force-landscape-fallback #gameScreen.active {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    width: 100dvh;
-    height: 100vw;
-    transform: translate(-50%, -50%) rotate(90deg);
-    transform-origin: center;
-  }
-  body.force-landscape-fallback .portrait-hint { display: none !important; }
-  body.force-landscape-fallback .game-hud {
-    left: max(8px, env(safe-area-inset-top));
-    right: max(8px, env(safe-area-inset-bottom));
-  }
-  body.force-landscape-fallback .mobile-controls {
-    left: max(12px, env(safe-area-inset-top));
-    right: max(12px, env(safe-area-inset-bottom));
-  }
-}
-
 @media (orientation: landscape) and (hover: none), (orientation: landscape) and (pointer: coarse) {
   html, body, #app, .screen { height: 100dvh; min-height: 100dvh; }
   .game-screen { width: 100vw; height: 100dvh; }
@@ -548,7 +521,6 @@ h2 { margin-bottom: 12px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.0
   }
   .control-button { width: 58px; height: 58px; border-radius: 18px; }
   .jump-button { width: 66px; height: 66px; }
-  .portrait-hint { display: none !important; }
 }
 
 @media (max-height: 690px) {
@@ -1446,4 +1418,115 @@ h2 { margin-bottom: 12px; font-size: clamp(26px, 5vw, 38px); letter-spacing: -.0
   .splash-frame { height: calc(100dvh - 12px); width: auto; max-width: 98vw; }
   .splash-cat-mascot .mascot-cat { transform: translate(-50%, -50%) scale(1.3); }
   .splash-bottom-actions { bottom: 3%; }
+}
+
+/* 手机统一横屏入口：不再旋转并裁切页面，由用户真实旋转设备。 */
+.orientation-gate {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255,255,255,.92), transparent 31%),
+    linear-gradient(155deg, #d9f1ff, #fff0db 56%, #d9efde);
+}
+.orientation-card {
+  width: min(360px, 90vw);
+  padding: 30px 25px 25px;
+  border: 1px solid rgba(87,135,166,.18);
+  border-radius: 30px;
+  background: rgba(255,253,247,.9);
+  box-shadow: 0 22px 60px rgba(65,103,130,.2);
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+.orientation-card h2 { margin-bottom: 9px; color: #456a86; font-size: 26px; }
+.orientation-card p:not(.eyebrow) { margin-bottom: 18px; color: #728594; font-size: 13px; line-height: 1.7; }
+.orientation-card button {
+  width: 100%;
+  min-height: 52px;
+  border: 4px solid #fff;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(#91cff6, #579ed9);
+  box-shadow: inset 0 5px rgba(255,255,255,.35), 0 10px 24px rgba(70,139,192,.25);
+  font-weight: 900;
+}
+.orientation-card small { display: block; margin-top: 14px; color: #9a887d; font-size: 10px; line-height: 1.55; }
+.orientation-phone {
+  position: relative;
+  width: 96px;
+  height: 54px;
+  margin: 0 auto 18px;
+  border: 5px solid #5788ad;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #e8f7ff, #fff1dc);
+  box-shadow: 0 9px 18px rgba(73,118,152,.16);
+  animation: phoneTurn 2.2s ease-in-out infinite;
+}
+.orientation-phone::after {
+  content: "";
+  position: absolute;
+  right: 5px; top: 50%;
+  width: 4px; height: 13px;
+  border-radius: 3px;
+  background: #87b9da;
+  transform: translateY(-50%);
+}
+.orientation-phone span { display: grid; place-items: center; height: 100%; font-size: 24px; }
+@keyframes phoneTurn {
+  0%, 25% { transform: rotate(90deg) scale(.82); }
+  65%, 100% { transform: rotate(0) scale(1); }
+}
+
+@media (orientation: portrait) and (max-width: 700px) {
+  #app { visibility: hidden; }
+  .orientation-gate { display: flex; }
+}
+
+/* 低高度手机横屏：首页、地图、关卡全部压缩到安全可视区内。 */
+@media (orientation: landscape) and (max-height: 500px) {
+  .home-screen.splash-screen { padding: 4px; }
+  .splash-frame { height: calc(100dvh - 8px); width: auto; max-width: 100vw; border-radius: 15px; }
+  .splash-title-area { top: 5%; }
+  .splash-logo { font-size: clamp(48px, 8vw, 78px); }
+  .splash-ribbon { margin-top: 2%; padding-top: 1.4%; padding-bottom: 1.4%; }
+  .splash-start-btn { top: 49%; height: 18%; font-size: clamp(23px, 3vw, 34px); }
+  .splash-rule-card { top: 68%; padding-top: .7%; padding-bottom: .7%; }
+  .splash-cat-mascot { bottom: 6%; transform: scale(.82); transform-origin: bottom left; }
+  .splash-bottom-actions { bottom: 2%; transform: scale(.78); transform-origin: bottom center; }
+
+  .route-map-scene .map-header { left: 12px; top: 8px; grid-template-columns: 38px auto; gap: 9px; }
+  .route-map-scene .map-header h2 { font-size: 23px; }
+  .route-map-scene .map-header p { font-size: 10px; }
+  .route-map-scene .map-header .eyebrow { font-size: 7px; }
+  .route-map-scene .map-back-button { width: 36px; height: 36px; border-radius: 12px; }
+  .route-map-scene .resource-bar { top: 8px; right: 55px; padding: 4px; }
+  .route-map-scene .resource-bar span { padding: 5px 7px; font-size: 9px; }
+  .map-audio-toggle { top: 8px; right: 9px; width: 36px; height: 36px; }
+  .route-map-scene .node-button { width: 54px; height: 54px; border-width: 4px; font-size: 21px; }
+  .route-map-scene .node-card { min-width: 124px; padding: 7px 9px; }
+  .route-map-scene .node-card h3 { margin-bottom: 2px; font-size: 13px; }
+  .route-map-scene .node-card p,
+  .route-map-scene .node-card span,
+  .route-map-scene .node-card small { font-size: 8px; }
+  .route-map-scene .node-one { left: 12%; bottom: 10%; }
+  .route-map-scene .node-two { left: 43%; bottom: 34%; }
+  .route-map-scene .node-three { right: 8%; top: 25%; }
+  .route-map-scene .map-reset-button { right: 9px; bottom: 7px; padding: 5px 8px; font-size: 9px; }
+  .map-cat-guide { transform: scale(.7); transform-origin: bottom left; }
+
+  .game-hud { gap: 5px; }
+  .hud-main { min-width: 126px; }
+  .hud-main h2 { font-size: 12px; }
+  .hud-chip { min-width: 58px; padding: 4px 7px; }
+  .hud-chip span { font-size: 10px; }
+  .hud-chip small { font-size: 7px; }
+  .game-audio-toggle, .icon-button { width: 36px; height: 36px; border-radius: 11px; }
+  .control-button { width: 52px; height: 52px; font-size: 22px; }
+  .jump-button { width: 60px; height: 60px; }
 }

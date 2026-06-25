@@ -1051,10 +1051,9 @@ function resizeCanvas() {
 
 let viewportRefreshTimer = 0;
 function updateMobileOrientationLayout() {
-  const shouldForceLandscape = isTouchPhone() &&
-    window.innerHeight > window.innerWidth &&
-    ui.game.classList.contains("active");
-  document.body.classList.toggle("force-landscape-fallback", shouldForceLandscape);
+  const needsLandscape = window.innerWidth <= 700 && window.innerHeight > window.innerWidth;
+  document.body.classList.toggle("needs-landscape", needsLandscape);
+  document.querySelector("#orientationGate").setAttribute("aria-hidden", needsLandscape ? "false" : "true");
 }
 
 function scheduleViewportRefresh() {
@@ -1066,7 +1065,9 @@ function scheduleViewportRefresh() {
 }
 
 function isTouchPhone() {
-  return window.matchMedia("(hover: none), (pointer: coarse)").matches &&
+  const touchCapable = navigator.maxTouchPoints > 0 ||
+    window.matchMedia("(hover: none), (pointer: coarse)").matches;
+  return touchCapable &&
     Math.min(window.screen.width, window.screen.height) < 900;
 }
 
@@ -1912,7 +1913,7 @@ document.querySelectorAll("[data-level-node]").forEach((button) => {
 });
 document.querySelector("#resetProgressButton").addEventListener("click", resetProgress);
 document.querySelector("#pauseButton").addEventListener("click", openPause);
-document.querySelector("#portraitHint").addEventListener("click", requestLandscapeMode);
+document.querySelector("#orientationAction").addEventListener("click", requestLandscapeMode);
 document.querySelector("#resumeButton").addEventListener("click", closePause);
 document.querySelector("#restartButton").addEventListener("click", restartLevel);
 document.querySelector("#quitButton").addEventListener("click", showLevelSelect);
@@ -1957,6 +1958,7 @@ ui.dialog.addEventListener("click", (event) => {
 
 renderLevelMap();
 updateAudioButtons();
+scheduleViewportRefresh();
 
 /* =========================================================
    七、小工具

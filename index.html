@@ -162,7 +162,6 @@
         <div class="canvas-shell">
           <canvas id="gameCanvas" width="1280" height="720" aria-label="横版平台跳跃游戏"></canvas>
           <div id="toast" class="toast" role="status"></div>
-          <button id="portraitHint" class="portrait-hint" type="button">点击切换横屏游玩 ↻</button>
           <div id="tutorialHint" class="tutorial-hint">A D / ← → 移动　W / 空格 二段跳</div>
         </div>
 
@@ -212,6 +211,17 @@
         </div>
       </section>
     </main>
+
+    <div id="orientationGate" class="orientation-gate" role="dialog" aria-label="请横屏游玩">
+      <div class="orientation-card">
+        <div class="orientation-phone" aria-hidden="true"><span>🐾</span></div>
+        <p class="eyebrow">LANDSCAPE MODE</p>
+        <h2>请将手机横过来</h2>
+        <p>首页、关卡地图和游戏画面均为横版设计，横屏后会自动完整显示。</p>
+        <button id="orientationAction" type="button">尝试切换横屏 ↻</button>
+        <small>微信或 iPhone 无法自动旋转时，请关闭竖屏锁定后手动旋转手机。</small>
+      </div>
+    </div>
 
     <div id="dialogBackdrop" class="dialog-backdrop" aria-hidden="true">
       <div class="dialog" role="dialog" aria-modal="true">
